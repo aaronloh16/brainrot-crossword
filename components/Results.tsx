@@ -1,6 +1,7 @@
 "use client";
 
 import { RaceResult } from "./RaceArena";
+import { CrosswordGrid } from "./CrosswordGrid";
 
 interface ResultsProps {
   results: RaceResult[];
@@ -21,14 +22,25 @@ export function Results({ results, onPlayAgain }: ResultsProps) {
 
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Winner announcement */}
+      {/* Winner announcement with their completed crossword */}
       {winner && (
         <div className="text-center mb-12 pt-8">
           <div className="text-5xl mb-4">🏆</div>
           <h2 className="text-3xl font-bold mb-2">{winner.model.name}</h2>
-          <p className="text-zinc-400">
+          <p className="text-zinc-400 mb-6">
             {winner.correctAnswers}/{totalClues} correct in {formatTime(winner.timeMs)}
           </p>
+          
+          {/* Winner's completed crossword */}
+          <div className="flex justify-center mb-4">
+            <CrosswordGrid
+              gridState={winner.finalGridState}
+              correctAnswers={new Set(winner.correctCells)}
+              wrongAnswers={new Set(winner.wrongCells)}
+              size="medium"
+            />
+          </div>
+          <p className="text-xs text-zinc-500">Winner&apos;s completed crossword</p>
         </div>
       )}
 

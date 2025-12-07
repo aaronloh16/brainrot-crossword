@@ -19,10 +19,10 @@ interface CrosswordGridProps {
 }
 
 const CELL_SIZES = {
-  xs: 18,
-  small: 24,
-  medium: 32,
-  large: 40,
+  xs: 26,      // Race view - bigger for visibility
+  small: 32,
+  medium: 40,
+  large: 48,
 };
 
 export function CrosswordGrid({
@@ -134,8 +134,8 @@ function Cell({
     strokeColor = "#ef4444";
   }
 
-  const fontSize = size * 0.5;
-  const numberSize = size * 0.28;
+  const fontSize = size * 0.58;  // Larger for better visibility
+  const numberSize = size * 0.26;
   const gap = 1;
 
   return (

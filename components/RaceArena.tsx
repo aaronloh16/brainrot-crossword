@@ -46,6 +46,9 @@ export interface RaceResult {
   correctAnswers: number;
   wrongAnswers: number;
   rank: number;          // 1 = winner
+  finalGridState: (string | null)[][];  // The completed crossword grid
+  correctCells: string[];   // Cells that were correct (serialized for passing to results)
+  wrongCells: string[];     // Cells that were wrong
 }
 
 // Internal state tracked per model during the race
@@ -264,7 +267,15 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
         return next;
       });
 
-      return { model, endTime, correctCount, wrongCount };
+      return { 
+        model, 
+        endTime, 
+        correctCount, 
+        wrongCount, 
+        finalGridState: currentGridState,
+        correctCells: Array.from(correctCells),
+        wrongCells: Array.from(wrongCells),
+      };
     },
     [modelStates, solveClue]
   );
@@ -330,6 +341,9 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
       correctAnswers: r.correctCount,
       wrongAnswers: r.wrongCount,
       rank: i + 1,
+      finalGridState: r.finalGridState,
+      correctCells: r.correctCells,
+      wrongCells: r.wrongCells,
     }));
 
     // Notify parent component that race is complete
