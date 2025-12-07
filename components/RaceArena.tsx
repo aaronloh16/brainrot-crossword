@@ -1,3 +1,24 @@
+/**
+ * RaceArena Component
+ * 
+ * This is the core game logic component that orchestrates the AI race.
+ * It manages multiple models solving the crossword simultaneously,
+ * tracks their progress, and determines the winner.
+ * 
+ * Key responsibilities:
+ * 1. Initialize isolated state for each racing model
+ * 2. Run the countdown before race starts
+ * 3. Execute parallel solving loops for all models
+ * 4. Update UI in real-time as models answer clues
+ * 5. Determine winner and calculate final rankings
+ * 
+ * Architecture Notes:
+ * - Each model has its own gridState (isolated solving)
+ * - Models solve clues sequentially but race in parallel
+ * - Intersecting letters from solved clues help with later clues
+ * - API calls go to /api/solve which uses Vercel AI Gateway
+ */
+
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -10,28 +31,29 @@ import {
   fillAnswer,
   createEmptyGridState,
   ClueForSolving,
-  GRID_ROWS,
-  GRID_COLS,
 } from "@/lib/crossword-data";
 
+// Props passed from parent (page.tsx)
 interface RaceArenaProps {
-  selectedModels: ModelConfig[];
-  onRaceComplete: (results: RaceResult[]) => void;
+  selectedModels: ModelConfig[];  // 2-4 models to race
+  onRaceComplete: (results: RaceResult[]) => void;  // Callback when race ends
 }
 
+// Final results for each model
 export interface RaceResult {
   model: ModelConfig;
-  timeMs: number;
+  timeMs: number;        // Total time to complete
   correctAnswers: number;
   wrongAnswers: number;
-  rank: number;
+  rank: number;          // 1 = winner
 }
 
+// Internal state tracked per model during the race
 interface ModelState {
-  gridState: (string | null)[][];
-  correctCells: Set<string>;
-  wrongCells: Set<string>;
-  currentClueIndex: number;
+  gridState: (string | null)[][];  // Current filled letters
+  correctCells: Set<string>;        // "row,col" keys of correct cells
+  wrongCells: Set<string>;          // "row,col" keys of wrong cells
+  currentClueIndex: number;         // Which clue they're on
   isFinished: boolean;
   startTime: number;
   endTime: number | null;
@@ -40,19 +62,22 @@ interface ModelState {
 }
 
 export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
+  // === State ===
   const [isRacing, setIsRacing] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
-  const [modelStates, setModelStates] = useState<Map<string, ModelState>>(
-    new Map()
-  );
-  const [elapsedTimes, setElapsedTimes] = useState<Map<string, number>>(
-    new Map()
-  );
-  const clues = useRef(getCluesInOrder(crosswordData));
+  
+  // Map of modelId -> ModelState for each racing model
+  const [modelStates, setModelStates] = useState<Map<string, ModelState>>(new Map());
+  
+  // Elapsed time display (updated frequently during race)
+  const [elapsedTimes, setElapsedTimes] = useState<Map<string, number>>(new Map());
+  
+  // === Refs (persist across renders without causing re-renders) ===
+  const clues = useRef(getCluesInOrder(crosswordData));  // All clues in solving order
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const raceStartTimeRef = useRef<number>(0);
 
-  // Initialize model states
+  // === Initialize model states when selected models change ===
   useEffect(() => {
     const states = new Map<string, ModelState>();
     selectedModels.forEach((model) => {
@@ -71,15 +96,17 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
     setModelStates(states);
   }, [selectedModels]);
 
-  // Timer for elapsed time display
+  // === Timer effect - updates elapsed time display during race ===
   useEffect(() => {
     if (isRacing) {
+      // Update every 100ms for smooth timer display
       timerRef.current = setInterval(() => {
         const now = Date.now();
         setElapsedTimes((prev) => {
           const next = new Map(prev);
           selectedModels.forEach((model) => {
             const state = modelStates.get(model.id);
+            // Only update time for models still racing
             if (state && !state.isFinished) {
               next.set(model.id, Math.floor((now - raceStartTimeRef.current) / 1000));
             }
@@ -88,18 +115,21 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
         });
       }, 100);
 
+      // Cleanup on unmount or when race ends
       return () => {
         if (timerRef.current) clearInterval(timerRef.current);
       };
     }
   }, [isRacing, selectedModels, modelStates]);
 
-  // Solve a single clue for a model
+  // === Solve a single clue by calling the API ===
   const solveClue = useCallback(
     async (model: ModelConfig, clue: ClueForSolving, gridState: (string | null)[][]) => {
+      // Get any letters already filled from intersecting words
       const knownLetters = getKnownLetters(gridState, clue);
 
       try {
+        // Call our API route which uses Vercel AI Gateway
         const response = await fetch("/api/solve", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -117,36 +147,38 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
         
         if (!response.ok) {
           console.error(`API error for ${model.name}:`, result.error);
-          // Return a placeholder so the race can continue
+          // Return placeholder so race can continue (counts as wrong)
           return "_".repeat(clue.length);
         }
 
         return result.answer as string;
       } catch (error) {
         console.error(`Error solving clue for ${model.name}:`, error);
-        // Return a placeholder so the race can continue
         return "_".repeat(clue.length);
       }
     },
     []
   );
 
-  // Run the race for a single model
+  // === Run the complete race for a single model ===
   const runModelRace = useCallback(
     async (model: ModelConfig) => {
       const state = modelStates.get(model.id);
       if (!state) return;
 
+      // Track progress through the race
       let currentGridState = state.gridState;
       let correctCount = 0;
       let wrongCount = 0;
       const correctCells = new Set<string>();
       const wrongCells = new Set<string>();
 
+      // Solve each clue sequentially
+      // (Sequential so intersecting letters can help later clues)
       for (let i = 0; i < clues.current.length; i++) {
         const clue = clues.current[i];
 
-        // Update current clue index
+        // Update UI to show which clue we're on
         setModelStates((prev) => {
           const next = new Map(prev);
           const s = next.get(model.id);
@@ -156,17 +188,17 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
           return next;
         });
 
-        // Solve the clue
+        // Get the model's answer from the API
         const answer = await solveClue(model, clue, currentGridState);
 
         if (answer) {
-          // Check if answer is correct
+          // Check correctness
           const isCorrect = answer === clue.answer;
 
-          // Fill in the grid
+          // Fill answer into the grid (even if wrong - it affects intersections)
           currentGridState = fillAnswer(currentGridState, clue, answer);
 
-          // Mark cells as correct or wrong
+          // Mark individual cells as correct/wrong for UI coloring
           for (let j = 0; j < clue.length; j++) {
             const row = clue.direction === "across" ? clue.row : clue.row + j;
             const col = clue.direction === "across" ? clue.col + j : clue.col;
@@ -174,9 +206,9 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
             
             if (isCorrect) {
               correctCells.add(key);
-              wrongCells.delete(key); // In case it was marked wrong before
+              wrongCells.delete(key);  // May have been marked wrong by another clue
             } else {
-              // Only mark as wrong if the specific letter is wrong
+              // Per-letter accuracy: some letters might be right
               const guessedLetter = answer[j];
               const correctLetter = clue.answer[j];
               if (guessedLetter !== correctLetter) {
@@ -187,13 +219,14 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
             }
           }
 
+          // Update counts
           if (isCorrect) {
             correctCount++;
           } else {
             wrongCount++;
           }
 
-          // Update state
+          // Update state for real-time UI updates
           setModelStates((prev) => {
             const next = new Map(prev);
             next.set(model.id, {
@@ -210,10 +243,11 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
         }
 
         // Small delay between clues for visual effect
+        // (Makes it easier to watch the race progress)
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
-      // Mark as finished
+      // Model finished - record end time
       const endTime = Date.now();
       setModelStates((prev) => {
         const next = new Map(prev);
@@ -235,9 +269,9 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
     [modelStates, solveClue]
   );
 
-  // Start the race
+  // === Start the race ===
   const startRace = useCallback(async () => {
-    // Countdown
+    // Dramatic countdown: 3... 2... 1... GO!
     setCountdown(3);
     await new Promise((r) => setTimeout(r, 1000));
     setCountdown(2);
@@ -246,11 +280,11 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
     await new Promise((r) => setTimeout(r, 1000));
     setCountdown(null);
 
-    // Reset states and start
+    // Reset all model states for fresh start
     const startTime = Date.now();
     raceStartTimeRef.current = startTime;
     
-    setModelStates((prev) => {
+    setModelStates(() => {
       const next = new Map<string, ModelState>();
       selectedModels.forEach((model) => {
         next.set(model.id, {
@@ -270,24 +304,26 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
 
     setIsRacing(true);
 
-    // Run all models in parallel
+    // Start all models racing in parallel!
+    // Promise.all waits for all to finish
     const results = await Promise.all(
       selectedModels.map((model) => runModelRace(model))
     );
 
     setIsRacing(false);
 
-    // Calculate rankings
+    // Calculate final rankings
     const validResults = results.filter((r): r is NonNullable<typeof r> => r !== undefined);
+    
+    // Sort by: 1) Most correct answers, 2) Fastest time (tiebreaker)
     validResults.sort((a, b) => {
-      // First by correct answers (descending)
       if (b.correctCount !== a.correctCount) {
         return b.correctCount - a.correctCount;
       }
-      // Then by time (ascending)
       return a.endTime - b.endTime;
     });
 
+    // Build final results with rankings
     const finalResults: RaceResult[] = validResults.map((r, i) => ({
       model: r.model,
       timeMs: r.endTime - startTime,
@@ -296,17 +332,18 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
       rank: i + 1,
     }));
 
+    // Notify parent component that race is complete
     onRaceComplete(finalResults);
   }, [selectedModels, runModelRace, onRaceComplete]);
 
-  // Calculate progress for each model
+  // === Helper: Calculate progress percentage for a model ===
   const getProgress = (modelId: string) => {
     const state = modelStates.get(modelId);
     if (!state) return 0;
     return (state.currentClueIndex / clues.current.length) * 100;
   };
 
-  // Find winner
+  // === Determine current winner (most correct, then fastest) ===
   const finishedModels = Array.from(modelStates.entries())
     .filter(([, state]) => state.isFinished)
     .sort((a, b) => {
@@ -315,11 +352,16 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
       }
       return (a[1].endTime || 0) - (b[1].endTime || 0);
     });
-  const winnerId = finishedModels.length === selectedModels.length ? finishedModels[0]?.[0] : null;
+  
+  // Only show winner after ALL models have finished
+  const winnerId = finishedModels.length === selectedModels.length 
+    ? finishedModels[0]?.[0] 
+    : null;
 
+  // === Render ===
   return (
     <div className="relative">
-      {/* Countdown overlay */}
+      {/* Countdown overlay - covers everything during 3-2-1 */}
       {countdown !== null && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80">
           <div className="text-9xl font-black text-cyan-400 animate-ping">
@@ -328,7 +370,7 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
         </div>
       )}
 
-      {/* Start button */}
+      {/* Start button - shown before race begins */}
       {!isRacing && countdown === null && (
         <div className="text-center mb-8">
           <button
@@ -340,10 +382,12 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
         </div>
       )}
 
-      {/* Racing grid - 2x2 layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Racing grid - 2x2 layout for up to 4 models */}
+      <div className="grid grid-cols-2 gap-4">
         {[0, 1, 2, 3].map((index) => {
           const model = selectedModels[index];
+          
+          // Empty slot if less than 4 models selected
           if (!model) {
             return <EmptyModelSlot key={index} />;
           }
@@ -376,4 +420,3 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
     </div>
   );
 }
-

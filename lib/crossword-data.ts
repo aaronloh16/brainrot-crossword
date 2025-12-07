@@ -1,32 +1,64 @@
-// Crossword puzzle data for the Brainrot AI Race
-// Grid is 12 rows x 10 columns - expanded version with 13 words!
+/**
+ * Crossword Puzzle Data & Utilities
+ * 
+ * This file contains:
+ * 1. The crossword puzzle definition (words, clues, positions)
+ * 2. Grid generation logic
+ * 3. Helper functions for solving (getting known letters, filling answers)
+ * 
+ * Grid Coordinate System:
+ * - (row, col) where row 0 is top, col 0 is left
+ * - Words go either "across" (left-to-right) or "down" (top-to-bottom)
+ * 
+ * The crossword was designed so words intersect at shared letters,
+ * allowing models to use filled letters as hints for unsolved clues.
+ */
+
+// === Type Definitions ===
 
 export interface ClueData {
-  clue: string;
-  answer: string;
-  row: number;
-  col: number;
+  clue: string;    // The hint shown to players/AI
+  answer: string;  // The correct answer (uppercase)
+  row: number;     // Starting row (0-indexed)
+  col: number;     // Starting column (0-indexed)
 }
 
 export interface CrosswordData {
-  across: Record<string, ClueData>;
+  across: Record<string, ClueData>;  // Key = clue number
   down: Record<string, ClueData>;
 }
 
-// The crossword grid layout (12 x 10):
-//       0 1 2 3 4 5 6 7 8 9
-//    0  S I G M A # B L U D     1-ACROSS: SIGMA, 2-ACROSS: BLUD
-//    1  K # R S U S U # # #     3-ACROSS: SUS
-//    2  I # I # R # S # # #     
-//    3  B # D # A # S # # #     
-//    4  I # D # # # I # # #     1-DOWN: SKIBIDI, 4-DOWN: GRIDDY
-//    5  D # Y # # # N # # #     5-DOWN: AURA, 6-DOWN: BUSSIN
-//    6  I # # R I Z Z # # #     7-ACROSS: RIZZ
-//    7  # # # A # # # # # #     
-//    8  G Y A T T # C A P #     8-ACROSS: GYATT, 9-ACROSS: CAP
-//    9  # # # I # # O # # #     10-DOWN: RATIO, 11-DOWN: COOK
-//   10  # # # O H I O # # #     12-ACROSS: OHIO
-//   11  # # # # # # K # # #     
+// === The Crossword Puzzle ===
+
+/**
+ * Grid Layout Visualization (12 rows x 10 cols):
+ * 
+ *       0 1 2 3 4 5 6 7 8 9
+ *    0  S I G M A # B L U D     SIGMA across, BLUD across
+ *    1  K # R S U S U # # #     SUS across
+ *    2  I # I # R # S # # #     
+ *    3  B # D # A # S # # #     SKIBIDI down, GRIDDY down
+ *    4  I # D # # # I # # #     AURA down, BUSSIN down
+ *    5  D # Y # # # N # # #     
+ *    6  I # # R I Z Z # # #     RIZZ across
+ *    7  # # # A # # # # # #     
+ *    8  G Y A T T # C A P #     GYATT across, CAP across
+ *    9  # # # I # # O # # #     RATIO down, COOK down
+ *   10  # # # O H I O # # #     OHIO across
+ *   11  # # # # # # K # # #     
+ * 
+ * Words and their intersections:
+ * - SIGMA & SKIBIDI share 'S' at (0,0)
+ * - SIGMA & GRIDDY share 'G' at (0,2)
+ * - SIGMA & AURA share 'A' at (0,4)
+ * - BLUD & BUSSIN share 'B' at (0,6)
+ * - SUS & AURA share 'U' at (1,4)
+ * - RIZZ & RATIO share 'R' at (6,3)
+ * - GYATT & RATIO share 'T' at (8,3)
+ * - CAP & COOK share 'C' at (8,6)
+ * - OHIO & RATIO share 'O' at (10,3)
+ * - OHIO & COOK share 'O' at (10,6)
+ */
 
 export const crosswordData: CrosswordData = {
   across: {
@@ -113,20 +145,32 @@ export const crosswordData: CrosswordData = {
   },
 };
 
-// Grid dimensions
+// === Grid Constants ===
+
 export const GRID_ROWS = 12;
 export const GRID_COLS = 10;
 
-// Type for a cell in the grid
+// === Grid Cell Type ===
+
 export interface GridCell {
-  letter: string | null;
-  number?: number;
-  acrossClue?: string;
-  downClue?: string;
+  letter: string | null;  // null = blocked/black cell
+  number?: number;        // Clue number displayed in cell (if starting cell)
+  acrossClue?: string;    // Which across clue this cell belongs to
+  downClue?: string;      // Which down clue this cell belongs to
 }
 
-// Generate the grid from crossword data
+// === Grid Generation ===
+
+/**
+ * Generate the visual grid from crossword data
+ * 
+ * This creates a 2D array of cells, calculating:
+ * - Which cells are used (have letters) vs blocked
+ * - Clue numbers for starting cells
+ * - Which clues each cell belongs to (for highlighting)
+ */
 export function generateGrid(data: CrosswordData): GridCell[][] {
+  // Initialize with all blocked cells
   const grid: GridCell[][] = Array(GRID_ROWS)
     .fill(null)
     .map(() =>
@@ -135,9 +179,11 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
         .map(() => ({ letter: null }))
     );
 
+  // Track starting positions to assign clue numbers
   const numberedCells = new Map<string, number>();
   const cellKey = (row: number, col: number) => `${row},${col}`;
 
+  // Collect all clue starting positions
   const startingPositions: { row: number; col: number; clueNum: string }[] = [];
 
   for (const [num, clue] of Object.entries(data.across)) {
@@ -147,11 +193,13 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
     startingPositions.push({ row: clue.row, col: clue.col, clueNum: num });
   }
 
+  // Sort top-to-bottom, left-to-right (standard crossword numbering)
   startingPositions.sort((a, b) => {
     if (a.row !== b.row) return a.row - b.row;
     return a.col - b.col;
   });
 
+  // Assign sequential numbers to unique starting positions
   let currentNumber = 1;
   for (const pos of startingPositions) {
     const key = cellKey(pos.row, pos.col);
@@ -161,6 +209,7 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
     }
   }
 
+  // Fill in across words
   for (const [num, clue] of Object.entries(data.across)) {
     for (let i = 0; i < clue.answer.length; i++) {
       const row = clue.row;
@@ -173,12 +222,14 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
     }
   }
 
+  // Fill in down words (may overlap with across)
   for (const [num, clue] of Object.entries(data.down)) {
     for (let i = 0; i < clue.answer.length; i++) {
       const row = clue.row + i;
       const col = clue.col;
       grid[row][col].letter = clue.answer[i];
       grid[row][col].downClue = num;
+      // Only set number if not already set by an across word
       if (i === 0 && !grid[row][col].number) {
         grid[row][col].number = numberedCells.get(cellKey(row, col));
       }
@@ -188,16 +239,24 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
   return grid;
 }
 
+// === Solving Utilities ===
+
+/**
+ * Represents a clue ready for solving, with all needed context
+ */
 export interface ClueForSolving {
   number: string;
   direction: "across" | "down";
   clue: string;
-  answer: string;
+  answer: string;     // The correct answer (for checking)
   row: number;
   col: number;
   length: number;
 }
 
+/**
+ * Get all clues in solving order (by clue number)
+ */
 export function getCluesInOrder(data: CrosswordData): ClueForSolving[] {
   const clues: ClueForSolving[] = [];
 
@@ -225,10 +284,20 @@ export function getCluesInOrder(data: CrosswordData): ClueForSolving[] {
     });
   }
 
+  // Sort by clue number for consistent solving order
   clues.sort((a, b) => parseInt(a.number) - parseInt(b.number));
   return clues;
 }
 
+/**
+ * Get the known letters pattern for a clue based on current grid state
+ * 
+ * Returns a string like "S_G_A" where filled letters are shown
+ * and underscores represent unknown positions.
+ * 
+ * This is sent to the AI as a hint - intersecting letters help
+ * the model deduce answers even for unfamiliar terms.
+ */
 export function getKnownLetters(
   gridState: (string | null)[][],
   clue: ClueForSolving
@@ -243,6 +312,10 @@ export function getKnownLetters(
   return known;
 }
 
+/**
+ * Fill an answer into the grid state
+ * Returns a new grid (immutable update)
+ */
 export function fillAnswer(
   gridState: (string | null)[][],
   clue: ClueForSolving,
@@ -257,6 +330,10 @@ export function fillAnswer(
   return newGrid;
 }
 
+/**
+ * Create an empty grid state (all nulls)
+ * Used to initialize each model's grid at race start
+ */
 export function createEmptyGridState(): (string | null)[][] {
   return Array(GRID_ROWS)
     .fill(null)

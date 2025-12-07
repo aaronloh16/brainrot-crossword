@@ -14,11 +14,12 @@ interface CrosswordGridProps {
   correctAnswers?: Set<string>;
   wrongAnswers?: Set<string>;
   highlightCell?: { row: number; col: number } | null;
-  size?: "small" | "medium" | "large";
+  size?: "xs" | "small" | "medium" | "large";
   showAnimation?: boolean;
 }
 
 const CELL_SIZES = {
+  xs: 18,      // Extra small for race view - fits 4 grids on screen
   small: 24,
   medium: 32,
   large: 40,
