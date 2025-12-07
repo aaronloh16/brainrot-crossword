@@ -69,8 +69,8 @@ export const crosswordData: CrosswordData = {
       col: 0,
     },
     "2": {
-      clue: "british term for 'bro' or 'mate'",
-      answer: "BLUD",
+      clue: "Australian term for 'bro' or 'mate'",
+      answer: "BRUV",
       row: 0,
       col: 6,
     },
@@ -137,7 +137,7 @@ export const crosswordData: CrosswordData = {
       col: 3,
     },
     "11": {
-      clue: "'let him ___' - he's about to do something crazy",
+      clue: "'let him ___' ",
       answer: "COOK",
       row: 8,
       col: 6,
