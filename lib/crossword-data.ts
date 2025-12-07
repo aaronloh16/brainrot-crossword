@@ -1,5 +1,5 @@
 // Crossword puzzle data for the Brainrot AI Race
-// Grid is 10 rows x 8 columns
+// Grid is 12 rows x 10 columns - expanded version with 13 words!
 
 export interface ClueData {
   clue: string;
@@ -13,89 +13,120 @@ export interface CrosswordData {
   down: Record<string, ClueData>;
 }
 
-// The crossword grid layout:
-//       0 1 2 3 4 5 6 7
-//    0  S I G M A # # #     1-ACROSS: SIGMA
-//    1  U # Y # # # # #     1-DOWN: SUS, 2-DOWN: GYATT
-//    2  S # A # # # # #     
-//    3  # S T # # # # #     3-DOWN: SKIBIDI
-//    4  # K T # # # R #     4-DOWN: RATIO
-//    5  R I Z Z C # A #     5-ACROSS: RIZZ, 6-DOWN: COOK
-//    6  # B # # O # T #     
-//    7  # I # # O H I O     7-ACROSS: OHIO
-//    8  # D # # K # O #     
-//    9  # I # # # # # #     
+// The crossword grid layout (12 x 10):
+//       0 1 2 3 4 5 6 7 8 9
+//    0  S I G M A # B L U D     1-ACROSS: SIGMA, 2-ACROSS: BLUD
+//    1  K # R S U S U # # #     3-ACROSS: SUS
+//    2  I # I # R # S # # #     
+//    3  B # D # A # S # # #     
+//    4  I # D # # # I # # #     1-DOWN: SKIBIDI, 4-DOWN: GRIDDY
+//    5  D # Y # # # N # # #     5-DOWN: AURA, 6-DOWN: BUSSIN
+//    6  I # # R I Z Z # # #     7-ACROSS: RIZZ
+//    7  # # # A # # # # # #     
+//    8  G Y A T T # C A P #     8-ACROSS: GYATT, 9-ACROSS: CAP
+//    9  # # # I # # O # # #     10-DOWN: RATIO, 11-DOWN: COOK
+//   10  # # # O H I O # # #     12-ACROSS: OHIO
+//   11  # # # # # # K # # #     
 
 export const crosswordData: CrosswordData = {
   across: {
     "1": {
-      clue: "Lone wolf grindset archetype",
+      clue: "Lone wolf grindset archetype, male in his prime",
       answer: "SIGMA",
       row: 0,
       col: 0,
     },
-    "5": {
-      clue: "Charisma stat that unlocks the number",
-      answer: "RIZZ",
-      row: 5,
-      col: 0,
+    "2": {
+      clue: "British term for 'bro' or 'mate'",
+      answer: "BLUD",
+      row: 0,
+      col: 6,
+    },
+    "3": {
+      clue: "When the imposter is acting kinda...",
+      answer: "SUS",
+      row: 1,
+      col: 3,
     },
     "7": {
-      clue: "State where everything is allegedly sus",
+      clue: "Charisma stat that gets you the number fr fr",
+      answer: "RIZZ",
+      row: 6,
+      col: 3,
+    },
+    "8": {
+      clue: "What you exclaim when you see something... substantial",
+      answer: "GYATT",
+      row: 8,
+      col: 0,
+    },
+    "9": {
+      clue: "No ___ = I'm being completely serious rn",
+      answer: "CAP",
+      row: 8,
+      col: 6,
+    },
+    "12": {
+      clue: "State where literally anything weird can happen",
       answer: "OHIO",
-      row: 7,
-      col: 4,
+      row: 10,
+      col: 3,
     },
   },
   down: {
     "1": {
-      clue: "Short for suspicious, thanks to a certain game",
-      answer: "SUS",
+      clue: "Toilet-dwelling menace with an absolute banger of a theme song",
+      answer: "SKIBIDI",
       row: 0,
       col: 0,
     },
-    "2": {
-      clue: "Exclamation upon witnessing substantial curves",
-      answer: "GYATT",
+    "4": {
+      clue: "Post-touchdown dance that went absolutely viral",
+      answer: "GRIDDY",
       row: 0,
       col: 2,
     },
-    "3": {
-      clue: "Toilet-dwelling antagonist with catchy tune",
-      answer: "SKIBIDI",
-      row: 3,
-      col: 1,
-    },
-    "4": {
-      clue: "Getting owned when replies exceed likes",
-      answer: "RATIO",
-      row: 4,
-      col: 6,
+    "5": {
+      clue: "Invisible points you gain (+100) or lose (-1000)",
+      answer: "AURA",
+      row: 0,
+      col: 4,
     },
     "6": {
-      clue: '"Let him ___" - genius at work',
+      clue: "When food is so good it's absolutely ___",
+      answer: "BUSSIN",
+      row: 0,
+      col: 6,
+    },
+    "10": {
+      clue: "Getting L + ___ in the comments",
+      answer: "RATIO",
+      row: 6,
+      col: 3,
+    },
+    "11": {
+      clue: "'Let him ___' - he's about to do something crazy",
       answer: "COOK",
-      row: 5,
-      col: 4,
+      row: 8,
+      col: 6,
     },
   },
 };
 
 // Grid dimensions
-export const GRID_ROWS = 10;
-export const GRID_COLS = 8;
+export const GRID_ROWS = 12;
+export const GRID_COLS = 10;
 
 // Type for a cell in the grid
 export interface GridCell {
-  letter: string | null; // null means blocked cell
-  number?: number; // clue number if this is a starting cell
-  acrossClue?: string; // clue number for across word this cell belongs to
-  downClue?: string; // clue number for down word this cell belongs to
+  letter: string | null;
+  number?: number;
+  acrossClue?: string;
+  downClue?: string;
 }
 
 // Generate the grid from crossword data
 export function generateGrid(data: CrosswordData): GridCell[][] {
-  // Initialize empty grid
   const grid: GridCell[][] = Array(GRID_ROWS)
     .fill(null)
     .map(() =>
@@ -104,13 +135,9 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
         .map(() => ({ letter: null }))
     );
 
-  // Track which cells have numbers
   const numberedCells = new Map<string, number>();
-
-  // Helper to get cell key
   const cellKey = (row: number, col: number) => `${row},${col}`;
 
-  // Collect all starting positions and assign numbers
   const startingPositions: { row: number; col: number; clueNum: string }[] = [];
 
   for (const [num, clue] of Object.entries(data.across)) {
@@ -120,13 +147,11 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
     startingPositions.push({ row: clue.row, col: clue.col, clueNum: num });
   }
 
-  // Sort by position (top to bottom, left to right)
   startingPositions.sort((a, b) => {
     if (a.row !== b.row) return a.row - b.row;
     return a.col - b.col;
   });
 
-  // Assign numbers to unique positions
   let currentNumber = 1;
   for (const pos of startingPositions) {
     const key = cellKey(pos.row, pos.col);
@@ -136,7 +161,6 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
     }
   }
 
-  // Fill in across words
   for (const [num, clue] of Object.entries(data.across)) {
     for (let i = 0; i < clue.answer.length; i++) {
       const row = clue.row;
@@ -149,7 +173,6 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
     }
   }
 
-  // Fill in down words
   for (const [num, clue] of Object.entries(data.down)) {
     for (let i = 0; i < clue.answer.length; i++) {
       const row = clue.row + i;
@@ -165,7 +188,6 @@ export function generateGrid(data: CrosswordData): GridCell[][] {
   return grid;
 }
 
-// Get all clues in order for solving
 export interface ClueForSolving {
   number: string;
   direction: "across" | "down";
@@ -203,13 +225,10 @@ export function getCluesInOrder(data: CrosswordData): ClueForSolving[] {
     });
   }
 
-  // Sort by clue number
   clues.sort((a, b) => parseInt(a.number) - parseInt(b.number));
-
   return clues;
 }
 
-// Get known letters for a clue based on current grid state
 export function getKnownLetters(
   gridState: (string | null)[][],
   clue: ClueForSolving
@@ -224,7 +243,6 @@ export function getKnownLetters(
   return known;
 }
 
-// Fill answer into grid state
 export function fillAnswer(
   gridState: (string | null)[][],
   clue: ClueForSolving,
@@ -239,10 +257,8 @@ export function fillAnswer(
   return newGrid;
 }
 
-// Create empty grid state
 export function createEmptyGridState(): (string | null)[][] {
   return Array(GRID_ROWS)
     .fill(null)
     .map(() => Array(GRID_COLS).fill(null));
 }
-

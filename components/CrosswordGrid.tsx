@@ -11,16 +11,17 @@ import { useMemo } from "react";
 
 interface CrosswordGridProps {
   gridState: (string | null)[][];
-  correctAnswers?: Set<string>; // Set of "row,col" keys that are correct
-  wrongAnswers?: Set<string>; // Set of "row,col" keys that are wrong
+  correctAnswers?: Set<string>;
+  wrongAnswers?: Set<string>;
   highlightCell?: { row: number; col: number } | null;
   size?: "small" | "medium" | "large";
+  showAnimation?: boolean;
 }
 
 const CELL_SIZES = {
-  small: 28,
-  medium: 36,
-  large: 44,
+  small: 24,
+  medium: 32,
+  large: 40,
 };
 
 export function CrosswordGrid({
@@ -29,27 +30,68 @@ export function CrosswordGrid({
   wrongAnswers = new Set(),
   highlightCell = null,
   size = "medium",
+  showAnimation = false,
 }: CrosswordGridProps) {
   const cellSize = CELL_SIZES[size];
   const baseGrid = useMemo(() => generateGrid(crosswordData), []);
+  const padding = 2;
 
-  const width = GRID_COLS * cellSize;
-  const height = GRID_ROWS * cellSize;
+  const width = GRID_COLS * cellSize + padding * 2;
+  const height = GRID_ROWS * cellSize + padding * 2;
 
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className="w-full h-auto"
+      className="w-full h-auto drop-shadow-2xl"
       style={{ maxWidth: width }}
     >
-      {/* Background */}
-      <rect width={width} height={height} fill="#1a1a2e" rx={4} />
+      {/* Definitions for gradients and filters */}
+      <defs>
+        <linearGradient id="gridBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#0f172a" />
+          <stop offset="100%" stopColor="#1e1b4b" />
+        </linearGradient>
+        <linearGradient id="cellBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#1e293b" />
+          <stop offset="100%" stopColor="#0f172a" />
+        </linearGradient>
+        <linearGradient id="correctBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#065f46" />
+          <stop offset="100%" stopColor="#047857" />
+        </linearGradient>
+        <linearGradient id="wrongBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#7f1d1d" />
+          <stop offset="100%" stopColor="#991b1b" />
+        </linearGradient>
+        <linearGradient id="highlightBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#fbbf24" />
+          <stop offset="100%" stopColor="#f59e0b" />
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* Background with rounded corners */}
+      <rect
+        x={0}
+        y={0}
+        width={width}
+        height={height}
+        fill="url(#gridBg)"
+        rx={8}
+        ry={8}
+      />
 
       {/* Grid cells */}
       {baseGrid.map((row, rowIndex) =>
         row.map((cell, colIndex) => {
-          const x = colIndex * cellSize;
-          const y = rowIndex * cellSize;
+          const x = colIndex * cellSize + padding;
+          const y = rowIndex * cellSize + padding;
           const key = `${rowIndex},${colIndex}`;
           const guess = gridState[rowIndex]?.[colIndex];
           const isCorrect = correctAnswers.has(key);
@@ -68,6 +110,7 @@ export function CrosswordGrid({
               isCorrect={isCorrect}
               isWrong={isWrong}
               isHighlighted={isHighlighted}
+              showAnimation={showAnimation}
             />
           );
         })
@@ -85,6 +128,7 @@ interface CellProps {
   isCorrect: boolean;
   isWrong: boolean;
   isHighlighted: boolean;
+  showAnimation: boolean;
 }
 
 function Cell({
@@ -97,7 +141,6 @@ function Cell({
   isWrong,
   isHighlighted,
 }: CellProps) {
-  // Blocked cell (no letter)
   if (cell.letter === null) {
     return (
       <rect
@@ -105,69 +148,75 @@ function Cell({
         y={y}
         width={size}
         height={size}
-        fill="#0f0f1a"
-        stroke="#1a1a2e"
-        strokeWidth={1}
+        fill="#030712"
+        rx={2}
       />
     );
   }
 
-  // Active cell with letter
-  let fillColor = "#16213e"; // Default dark blue
-  let strokeColor = "#0f4c75"; // Border
+  let fillGradient = "url(#cellBg)";
+  let strokeColor = "#334155";
+  let glowFilter = "";
 
   if (isHighlighted) {
-    fillColor = "#fbbf24"; // Yellow highlight
-    strokeColor = "#f59e0b";
+    fillGradient = "url(#highlightBg)";
+    strokeColor = "#fbbf24";
+    glowFilter = "url(#glow)";
   } else if (isCorrect) {
-    fillColor = "#065f46"; // Green
+    fillGradient = "url(#correctBg)";
     strokeColor = "#10b981";
+    glowFilter = "url(#glow)";
   } else if (isWrong) {
-    fillColor = "#7f1d1d"; // Red
+    fillGradient = "url(#wrongBg)";
     strokeColor = "#ef4444";
   }
 
   const fontSize = size * 0.5;
-  const numberSize = size * 0.25;
+  const numberSize = size * 0.28;
+  const gap = 1;
 
   return (
-    <g>
-      {/* Cell background */}
+    <g filter={glowFilter}>
       <rect
-        x={x + 1}
-        y={y + 1}
-        width={size - 2}
-        height={size - 2}
-        fill={fillColor}
+        x={x + gap}
+        y={y + gap}
+        width={size - gap * 2}
+        height={size - gap * 2}
+        fill={fillGradient}
         stroke={strokeColor}
-        strokeWidth={2}
-        rx={3}
+        strokeWidth={1.5}
+        rx={4}
       />
 
-      {/* Clue number */}
       {cell.number && (
         <text
-          x={x + 4}
-          y={y + numberSize + 2}
+          x={x + 3}
+          y={y + numberSize + 1}
           fontSize={numberSize}
-          fill="#94a3b8"
-          fontFamily="monospace"
-          fontWeight="bold"
+          fill="#64748b"
+          fontFamily="system-ui, sans-serif"
+          fontWeight="600"
         >
           {cell.number}
         </text>
       )}
 
-      {/* Letter (guess) */}
       {guess && (
         <text
           x={x + size / 2}
           y={y + size / 2 + fontSize * 0.35}
           fontSize={fontSize}
-          fill={isCorrect ? "#34d399" : isWrong ? "#f87171" : "#e2e8f0"}
+          fill={isCorrect ? "#6ee7b7" : isWrong ? "#fca5a5" : "#f1f5f9"}
           fontFamily="system-ui, sans-serif"
-          fontWeight="bold"
+          fontWeight="700"
           textAnchor="middle"
+          style={{
+            textShadow: isCorrect
+              ? "0 0 8px rgba(110, 231, 183, 0.5)"
+              : isWrong
+              ? "0 0 8px rgba(252, 165, 165, 0.5)"
+              : "none",
+          }}
         >
           {guess}
         </text>
@@ -176,7 +225,6 @@ function Cell({
   );
 }
 
-// Clue display component
 interface ClueListProps {
   direction: "across" | "down";
   completedClues?: Set<string>;
@@ -188,23 +236,25 @@ export function ClueList({ direction, completedClues = new Set() }: ClueListProp
   );
 
   return (
-    <div className="space-y-2">
-      <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider">
+    <div className="space-y-3">
+      <h3 className="text-xs font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
         {direction}
       </h3>
-      <ul className="space-y-1">
+      <ul className="space-y-2">
         {clues.map(([num, data]) => {
           const isComplete = completedClues.has(`${direction}-${num}`);
           return (
             <li
               key={num}
-              className={`text-sm ${
+              className={`text-xs leading-relaxed transition-all duration-300 ${
                 isComplete
-                  ? "text-emerald-400 line-through opacity-70"
-                  : "text-slate-300"
+                  ? "text-emerald-400/70 line-through"
+                  : "text-slate-400"
               }`}
             >
-              <span className="font-mono text-cyan-500 mr-2">{num}.</span>
+              <span className="font-mono font-bold text-purple-400 mr-1.5">
+                {num}.
+              </span>
               {data.clue}
             </li>
           );
@@ -213,4 +263,3 @@ export function ClueList({ direction, completedClues = new Set() }: ClueListProp
     </div>
   );
 }
-
