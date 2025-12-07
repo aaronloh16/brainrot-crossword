@@ -1,27 +1,28 @@
-# 🧠 Brainrot Crossword
+# 🎯 RizzWord
 
 > **Vercel AI Gateway Hackathon Submission** - Model Eval Game Category
 
-A real-time AI model evaluation game where multiple LLMs compete to solve a Gen Z slang crossword puzzle. Watch GPT-4o, Claude, Gemini, and Grok race head-to-head to prove who truly understands internet culture!
+Which AI has the most rizz? A real-time model evaluation game where GPT-4o, Claude, Gemini, and Grok race to solve a Gen Z slang crossword. Watch them battle head-to-head to prove who truly understands internet culture!
 
-![Brainrot Crossword](https://img.shields.io/badge/Vercel-AI%20Gateway-purple)
+![RizzWord](https://img.shields.io/badge/Vercel-AI%20Gateway-purple)
 ![Category](https://img.shields.io/badge/Category-Model%20Eval%20Game-cyan)
 ![AI SDK](https://img.shields.io/badge/AI%20SDK-v5-green)
 
 ## 🎮 What is this?
 
-**Brainrot Crossword** is a Model Eval Game that tests how well different AI models understand Gen Z internet slang and memes. 
+**RizzWord** is a Model Eval Game that tests how well different AI models understand Gen Z internet slang and memes. 
 
 - Select 2-4 AI models to compete
 - Watch them race to solve a crossword filled with terms like "SKIBIDI", "RIZZ", "GYATT", and "SIGMA"
 - Models use intersecting letters as hints (just like a real crossword!)
-- See which AI has the most "rizz" when it comes to internet culture
+- See which AI truly has the rizz when it comes to internet culture
 
 ## 🚀 Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
 - **AI Integration**: [Vercel AI SDK](https://sdk.vercel.ai) + [AI Gateway](https://vercel.com/ai-gateway)
 - **Styling**: Tailwind CSS 4
+- **Rate Limiting**: Upstash Redis / Vercel KV
 - **Deployment**: Vercel Edge Runtime
 
 ## 🤖 Supported Models
@@ -46,6 +47,7 @@ Key features:
 - **Sequential solving per model**: Uses intersecting letters as hints
 - **Real-time updates**: Watch grids fill in as models answer
 - **Edge Runtime**: Fast cold starts globally
+- **Rate limiting**: ~5 games per hour per IP
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed technical documentation.
 
@@ -73,7 +75,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed technical documentation.
 
 ## 🚢 Deploy to Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/brainrot-crossword)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/rizzword)
 
 ### Step 1: Deploy
 
@@ -124,7 +126,7 @@ Rate limit: **~5 games per hour per IP** (configurable in `api/solve/route.ts`)
 ## 📁 Project Structure
 
 ```
-brainrot-crossword/
+rizzword/
 ├── app/
 │   ├── page.tsx              # Main game UI
 │   └── api/solve/route.ts    # AI Gateway endpoint
@@ -158,7 +160,7 @@ Each clue is written in Gen Z style for maximum authenticity!
 
 ## 🙏 Credits
 
-Built for the [Vercel AI Gateway Hackathon](https://vercel.com/ai-gateway) 
+Built for the [Vercel AI Gateway Hackathon](https://vercel.com/ai-gateway)
 
 ---
 

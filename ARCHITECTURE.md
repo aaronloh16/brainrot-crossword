@@ -1,6 +1,6 @@
-# Brainrot Crossword - Architecture & Design
+# RizzWord - Architecture & Design
 
-A real-time AI model evaluation game where multiple LLMs compete to solve a Gen Z slang crossword puzzle.
+A real-time AI model evaluation game where multiple LLMs compete to solve a Gen Z slang crossword puzzle. Which AI has the most rizz?
 
 ## Overview
 

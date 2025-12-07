@@ -68,17 +68,14 @@ export default function Home() {
               AI MODEL EVALUATION GAME
             </span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">
+          <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tight">
             <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              BRAINROT
+              RIZZWORD
             </span>
-            <br />
-            <span className="text-white/90">CROSSWORD</span>
           </h1>
           <p className="text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
-            Watch AI models compete to solve Gen Z slang! Who has the most{" "}
-            <span className="text-purple-400">rizz</span> when it comes to
-            internet culture? No cap, this is gonna be{" "}
+            Which AI has the most <span className="text-purple-400">rizz</span>? 
+            Watch models race to solve Gen Z slang! No cap, this is gonna be{" "}
             <span className="text-cyan-400">bussin</span> fr fr.
           </p>
           <div className="mt-6 flex justify-center gap-3 flex-wrap">

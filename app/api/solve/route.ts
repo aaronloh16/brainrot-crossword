@@ -39,7 +39,7 @@ if (redisUrl && redisToken) {
     redis,
     limiter: Ratelimit.slidingWindow(300, "1 h"), // ~5 full games per hour
     analytics: true,
-    prefix: "brainrot-crossword",
+    prefix: "rizzword",
   });
 }
 
