@@ -9,6 +9,9 @@ interface ModelRacerProps {
   correctCells: Set<string>;
   wrongCells: Set<string>;
   currentClue: { row: number; col: number } | null;
+  currentClueText?: string;
+  currentClueNumber?: string;
+  currentClueDirection?: "across" | "down";
   progress: number;
   timeElapsed: number;
   isFinished: boolean;
@@ -23,6 +26,9 @@ export function ModelRacer({
   correctCells,
   wrongCells,
   currentClue,
+  currentClueText,
+  currentClueNumber,
+  currentClueDirection,
   progress,
   timeElapsed,
   isFinished,
@@ -104,8 +110,20 @@ export function ModelRacer({
           />
         </div>
 
+        {/* Current clue */}
+        {!isFinished && currentClueText && (
+          <div className="mt-3 px-2 py-2 bg-black/30 rounded-lg border border-zinc-800/50">
+            <div className="text-[9px] font-medium text-zinc-600 mb-0.5">
+              {currentClueNumber} {currentClueDirection}
+            </div>
+            <div className="text-[10px] text-zinc-400 leading-relaxed line-clamp-2">
+              {currentClueText}
+            </div>
+          </div>
+        )}
+
         {/* Status */}
-        <div className="mt-3 text-center text-xs text-zinc-500">
+        <div className="mt-2 text-center text-xs text-zinc-500">
           {isFinished ? (
             <span className="text-green-500">Complete</span>
           ) : (

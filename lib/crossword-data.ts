@@ -69,7 +69,7 @@ export const crosswordData: CrosswordData = {
       col: 0,
     },
     "2": {
-      clue: "Australian term for 'bro' or 'mate'",
+      clue: "british slang for 'bro' (4 letters)",
       answer: "BRUV",
       row: 0,
       col: 6,

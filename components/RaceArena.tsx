@@ -436,6 +436,9 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
                   ? { row: currentClue.row, col: currentClue.col }
                   : null
               }
+              currentClueText={currentClue?.clue}
+              currentClueNumber={currentClue?.number}
+              currentClueDirection={currentClue?.direction}
               progress={getProgress(model.id)}
               timeElapsed={elapsedTimes.get(model.id) || 0}
               isFinished={state?.isFinished || false}
