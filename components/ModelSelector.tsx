@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { ModelConfig, availableModels } from "@/lib/models";
 
 interface ModelSelectorProps {
@@ -20,10 +19,10 @@ export function ModelSelector({
   const canAddMore = selectedModels.length < maxModels;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Select AI Models</h2>
-        <span className="text-sm text-slate-400">
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-sm font-medium text-zinc-400">Select AI Models</h2>
+        <span className="text-xs text-zinc-600">
           {selectedModels.length}/{maxModels} selected
         </span>
       </div>
@@ -38,17 +37,17 @@ export function ModelSelector({
               key={model.id}
               onClick={() => !disabled && onModelToggle(model)}
               disabled={disabled}
-              className={`relative p-4 rounded-xl border-2 transition-all ${
+              className={`relative p-4 rounded-xl border text-left transition-all ${
                 selected
-                  ? "border-cyan-400 bg-cyan-900/30 shadow-lg shadow-cyan-500/20"
+                  ? "border-white/20 bg-white/5"
                   : disabled
-                  ? "border-slate-700 bg-slate-800/30 opacity-50 cursor-not-allowed"
-                  : "border-slate-600 bg-slate-800/50 hover:border-slate-400 hover:bg-slate-700/50"
+                  ? "border-zinc-900 bg-zinc-950/50 opacity-40 cursor-not-allowed"
+                  : "border-zinc-800 bg-zinc-950 hover:border-zinc-700 hover:bg-zinc-900/50"
               }`}
             >
               {/* Selection indicator */}
               {selected && (
-                <div className="absolute top-2 right-2 w-5 h-5 bg-cyan-400 rounded-full flex items-center justify-center">
+                <div className="absolute top-3 right-3 w-5 h-5 bg-white rounded-full flex items-center justify-center">
                   <svg
                     className="w-3 h-3 text-black"
                     fill="none"
@@ -65,14 +64,16 @@ export function ModelSelector({
                 </div>
               )}
 
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-3xl">{model.avatar}</span>
-                <span
-                  className="font-semibold text-sm"
-                  style={{ color: selected ? model.color : "#94a3b8" }}
-                >
-                  {model.name}
-                </span>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{model.avatar}</span>
+                <div>
+                  <span className="text-sm font-medium text-white block">
+                    {model.name}
+                  </span>
+                  <span className="text-xs text-zinc-500">
+                    {model.gatewayId.split('/')[0]}
+                  </span>
+                </div>
               </div>
             </button>
           );
@@ -80,11 +81,10 @@ export function ModelSelector({
       </div>
 
       {selectedModels.length < 2 && (
-        <p className="text-amber-400 text-sm text-center">
-          Select at least 2 models to start the race
+        <p className="text-amber-500/80 text-xs mt-4 text-center">
+          Select at least 2 models to start
         </p>
       )}
     </div>
   );
 }
-

@@ -42,120 +42,99 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#050510] text-white overflow-hidden">
-      {/* Animated background */}
+    <div className="min-h-screen bg-black text-white">
+      {/* Subtle gradient background */}
       <div className="fixed inset-0 pointer-events-none">
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)`,
-            backgroundSize: "50px 50px",
-          }}
-        />
-        {/* Gradient orbs */}
-        <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-cyan-600/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: "1s" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-full blur-[150px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-zinc-950" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-purple-500/10 via-transparent to-transparent blur-3xl" />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
+      <div className="relative z-10">
         {/* Header */}
-        <header className="text-center mb-12">
-          <div className="inline-block mb-4">
-            <span className="text-xs font-mono text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
-              AI MODEL EVALUATION GAME
-            </span>
-          </div>
-          <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tight">
-            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              RIZZWORD
-            </span>
-          </h1>
-          <p className="text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
-            Which AI has the most <span className="text-purple-400">rizz</span>? 
-            Watch models race to solve Gen Z slang! No cap, this is gonna be{" "}
-            <span className="text-cyan-400">bussin</span> fr fr.
-          </p>
-          <div className="mt-6 flex justify-center gap-3 flex-wrap">
-            <span className="px-4 py-1.5 bg-gradient-to-r from-cyan-500/10 to-cyan-500/5 rounded-full text-xs text-cyan-400 border border-cyan-500/20 font-medium">
-              Vercel AI SDK
-            </span>
-            <span className="px-4 py-1.5 bg-gradient-to-r from-purple-500/10 to-purple-500/5 rounded-full text-xs text-purple-400 border border-purple-500/20 font-medium">
-              AI Gateway
-            </span>
-            <span className="px-4 py-1.5 bg-gradient-to-r from-pink-500/10 to-pink-500/5 rounded-full text-xs text-pink-400 border border-pink-500/20 font-medium">
-              13 Brainrot Clues
-            </span>
+        <header className="border-b border-white/5">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-xl font-bold tracking-tight">RizzWord</span>
+              <span className="text-[10px] font-medium text-zinc-500 bg-zinc-900 px-2 py-0.5 rounded-full border border-zinc-800">
+                AI EVAL
+              </span>
+            </div>
+            <div className="flex items-center gap-4">
+              <a
+                href="https://vercel.com/ai-gateway"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-zinc-500 hover:text-white transition-colors"
+              >
+                Powered by AI Gateway
+              </a>
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-500 hover:text-white transition-colors"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z" />
+                </svg>
+              </a>
+            </div>
           </div>
         </header>
 
-        {/* Main content */}
-        <main>
+        <main className="max-w-6xl mx-auto px-6">
           {phase === "select" && (
-            <div className="max-w-5xl mx-auto">
-              <div className="grid lg:grid-cols-5 gap-6">
-                {/* Model selector - wider */}
-                <div className="lg:col-span-3 bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl rounded-3xl p-6 border border-slate-800/50 shadow-2xl">
+            <>
+              {/* Hero */}
+              <div className="pt-20 pb-16 text-center">
+                <div className="inline-flex items-center gap-2 text-xs text-zinc-500 mb-6">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  Vercel AI Gateway Hackathon
+                </div>
+                <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+                  Which AI has the
+                  <br />
+                  <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+                    most rizz?
+                  </span>
+                </h1>
+                <p className="text-lg text-zinc-400 max-w-lg mx-auto mb-10">
+                  Race GPT-4o, Claude, Gemini, and Grok to solve a Gen Z slang crossword. 
+                  See which AI truly understands internet culture.
+                </p>
+
+                {selectedModels.length >= 2 && (
+                  <button
+                    onClick={handleStartGame}
+                    className="group inline-flex items-center gap-2 bg-white text-black font-medium px-6 py-3 rounded-full hover:bg-zinc-200 transition-all"
+                  >
+                    Start Race
+                    <svg 
+                      className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+
+              {/* Main content grid */}
+              <div className="grid lg:grid-cols-3 gap-6 pb-20">
+                {/* Model selector */}
+                <div className="lg:col-span-2 bg-zinc-950 rounded-2xl border border-zinc-900 p-6">
                   <ModelSelector
                     selectedModels={selectedModels}
                     onModelToggle={handleModelToggle}
                   />
-
-                  {selectedModels.length >= 2 && (
-                    <div className="mt-8 text-center">
-                      <button
-                        onClick={handleStartGame}
-                        className="group relative px-12 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold text-lg rounded-2xl overflow-hidden transition-all transform hover:scale-105 shadow-2xl shadow-purple-500/25"
-                      >
-                        <span className="relative z-10 flex items-center justify-center gap-2">
-                          <svg
-                            className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          START THE RACE
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </button>
-                    </div>
-                  )}
                 </div>
 
-                {/* Clue preview - narrower */}
-                <div className="lg:col-span-2 bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl rounded-3xl p-6 border border-slate-800/50 shadow-2xl">
-                  <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <svg
-                      className="w-5 h-5 text-purple-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                      />
-                    </svg>
-                    Crossword Clues
-                  </h2>
-                  <div className="grid grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                {/* Clues preview */}
+                <div className="bg-zinc-950 rounded-2xl border border-zinc-900 p-6">
+                  <h3 className="text-sm font-medium text-zinc-400 mb-4">Crossword Clues</h3>
+                  <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2">
                     <ClueList direction="across" />
                     <ClueList direction="down" />
                   </div>
@@ -163,103 +142,93 @@ export default function Home() {
               </div>
 
               {/* How it works */}
-              <div className="mt-10 bg-gradient-to-br from-slate-900/60 to-slate-900/30 backdrop-blur-xl rounded-3xl p-8 border border-slate-800/30">
-                <h2 className="text-xl font-bold text-center mb-8 text-white/90">
-                  How It Works
+              <div className="border-t border-zinc-900 py-20">
+                <h2 className="text-center text-sm font-medium text-zinc-500 mb-12">
+                  HOW IT WORKS
                 </h2>
                 <div className="grid md:grid-cols-3 gap-8">
-                  <div className="text-center group">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 border border-cyan-500/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xl">
                       🤖
                     </div>
-                    <h3 className="font-bold text-cyan-400 mb-2">
-                      1. Select Models
-                    </h3>
-                    <p className="text-sm text-slate-500 leading-relaxed">
-                      Choose 2-4 AI models to compete in the ultimate brainrot
-                      knowledge showdown
+                    <h3 className="font-medium mb-2">1. Pick your fighters</h3>
+                    <p className="text-sm text-zinc-500">
+                      Choose 2-4 AI models to compete
                     </p>
                   </div>
-                  <div className="text-center group">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/5 border border-purple-500/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
-                      🏎️
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xl">
+                      ⚡
                     </div>
-                    <h3 className="font-bold text-purple-400 mb-2">
-                      2. Watch Them Race
-                    </h3>
-                    <p className="text-sm text-slate-500 leading-relaxed">
-                      Models solve clues in real-time, using intersecting
-                      letters for hints
+                    <h3 className="font-medium mb-2">2. Watch them race</h3>
+                    <p className="text-sm text-zinc-500">
+                      Models solve clues in real-time, using intersecting letters as hints
                     </p>
                   </div>
-                  <div className="text-center group">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-pink-500/20 to-pink-500/5 border border-pink-500/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xl">
                       🏆
                     </div>
-                    <h3 className="font-bold text-pink-400 mb-2">
-                      3. See Results
-                    </h3>
-                    <p className="text-sm text-slate-500 leading-relaxed">
-                      Find out which AI truly understands Gen Z internet culture
+                    <h3 className="font-medium mb-2">3. Crown the winner</h3>
+                    <p className="text-sm text-zinc-500">
+                      See which AI truly understands Gen Z culture
                     </p>
                   </div>
                 </div>
               </div>
-            </div>
+
+              {/* Terms showcase */}
+              <div className="border-t border-zinc-900 py-16">
+                <p className="text-center text-sm text-zinc-600 mb-8">
+                  Featuring terms like
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  {["SKIBIDI", "RIZZ", "GYATT", "SIGMA", "BUSSIN", "OHIO", "AURA", "SUS"].map((term) => (
+                    <span
+                      key={term}
+                      className="px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-full text-sm font-mono text-zinc-400"
+                    >
+                      {term}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </>
           )}
 
           {phase === "race" && (
-            <RaceArena
-              selectedModels={selectedModels}
-              onRaceComplete={handleRaceComplete}
-            />
+            <div className="py-8">
+              <RaceArena
+                selectedModels={selectedModels}
+                onRaceComplete={handleRaceComplete}
+              />
+            </div>
           )}
 
           {phase === "results" && (
-            <Results results={results} onPlayAgain={handlePlayAgain} />
+            <div className="py-8">
+              <Results results={results} onPlayAgain={handlePlayAgain} />
+            </div>
           )}
         </main>
 
         {/* Footer */}
-        <footer className="mt-20 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-800/50">
-            <span className="text-slate-500 text-sm">Built with</span>
-            <a
-              href="https://sdk.vercel.ai"
-              className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Vercel AI SDK
-            </a>
-            <span className="text-slate-600">•</span>
-            <a
-              href="https://vercel.com/docs/ai-gateway"
-              className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              AI Gateway
-            </a>
+        <footer className="border-t border-zinc-900 mt-20">
+          <div className="max-w-6xl mx-auto px-6 py-8 flex items-center justify-between">
+            <p className="text-xs text-zinc-600">
+              Built for the Vercel AI Gateway Hackathon
+            </p>
+            <div className="flex items-center gap-4 text-xs text-zinc-600">
+              <a href="https://sdk.vercel.ai" className="hover:text-white transition-colors">
+                AI SDK
+              </a>
+              <a href="https://vercel.com/ai-gateway" className="hover:text-white transition-colors">
+                AI Gateway
+              </a>
+            </div>
           </div>
-          <p className="mt-4 text-xs text-slate-600">
-            No skibidi toilets were harmed in the making of this game
-          </p>
         </footer>
       </div>
-
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #334155;
-          border-radius: 2px;
-        }
-      `}</style>
     </div>
   );
 }

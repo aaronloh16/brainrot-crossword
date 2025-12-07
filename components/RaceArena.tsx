@@ -361,23 +361,26 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
   // === Render ===
   return (
     <div className="relative">
-      {/* Countdown overlay - covers everything during 3-2-1 */}
+      {/* Countdown overlay */}
       {countdown !== null && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="text-9xl font-black text-cyan-400 animate-ping">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
+          <div className="text-[150px] font-bold text-white animate-pulse">
             {countdown}
           </div>
         </div>
       )}
 
-      {/* Start button - shown before race begins */}
+      {/* Start button */}
       {!isRacing && countdown === null && (
         <div className="text-center mb-8">
           <button
             onClick={startRace}
-            className="px-12 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold text-xl rounded-full hover:from-cyan-400 hover:to-purple-400 transition-all transform hover:scale-105 shadow-lg shadow-purple-500/30"
+            className="inline-flex items-center gap-2 bg-white text-black font-medium px-8 py-3 rounded-full hover:bg-zinc-200 transition-all"
           >
-            START RACE
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+            </svg>
+            Start Race
           </button>
         </div>
       )}
