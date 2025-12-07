@@ -28,14 +28,14 @@ export const availableModels: ModelConfig[] = [
   {
     id: "claude-sonnet",
     name: "Claude Sonnet 4",
-    gatewayId: "anthropic/claude-sonnet-4-20250514",
+    gatewayId: "anthropic/claude-sonnet-4.5",
     color: "#d4a27f",
     avatar: "🧠",
   },
   {
     id: "claude-haiku",
     name: "Claude Haiku 4.5",
-    gatewayId: "anthropic/claude-haiku-4-5-20250514",
+    gatewayId: "anthropic/claude-haiku-4.5",
     color: "#e8c9a8",
     avatar: "🧠",
     defaultSelected: true,
