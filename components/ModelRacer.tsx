@@ -40,9 +40,13 @@ export function ModelRacer({
     <div
       className={`relative rounded-xl border transition-all ${
         isWinner
-          ? "border-yellow-500/50 bg-yellow-500/5"
+          ? "border-yellow-500/50 bg-yellow-500/5 shadow-lg shadow-yellow-500/20"
           : "border-zinc-800 bg-zinc-950"
       }`}
+      style={{
+        borderTopColor: !isWinner ? `${model.color}40` : undefined,
+        borderTopWidth: !isWinner ? '2px' : undefined,
+      }}
     >
       {/* Winner badge */}
       {isWinner && (
@@ -57,7 +61,13 @@ export function ModelRacer({
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-lg">{model.avatar}</span>
+            <div className="w-6 h-6 flex-shrink-0 relative">
+              <img
+                src={model.icon}
+                alt={model.name}
+                className="w-full h-full object-contain"
+              />
+            </div>
             <div>
               <h3 className="text-sm font-medium text-white">{model.name}</h3>
               <div className="flex items-center gap-2 text-[10px] text-zinc-500">
@@ -72,10 +82,14 @@ export function ModelRacer({
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 bg-zinc-800 rounded-full overflow-hidden mb-3">
+        <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden mb-3">
           <div
-            className="h-full bg-white/80 transition-all duration-300 rounded-full"
-            style={{ width: `${progress}%` }}
+            className="h-full transition-all duration-300 rounded-full"
+            style={{
+              width: `${progress}%`,
+              backgroundColor: model.color,
+              opacity: 0.9,
+            }}
           />
         </div>
 
@@ -108,8 +122,24 @@ export function ModelRacer({
 
 export function EmptyModelSlot() {
   return (
-    <div className="rounded-xl border border-dashed border-zinc-800 flex items-center justify-center min-h-[280px] bg-zinc-950/50">
-      <p className="text-zinc-700 text-xs">Empty slot</p>
+    <div className="rounded-xl border-2 border-dashed border-zinc-800/50 flex flex-col items-center justify-center min-h-[280px] bg-zinc-950/30 transition-all hover:border-zinc-700/50 hover:bg-zinc-950/40">
+      <div className="w-12 h-12 rounded-full bg-zinc-900/50 border border-zinc-800 flex items-center justify-center mb-2">
+        <svg
+          className="w-6 h-6 text-zinc-700"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+          />
+        </svg>
+      </div>
+      <p className="text-zinc-700 text-xs font-medium">Empty slot</p>
+      <p className="text-zinc-800 text-[10px] mt-1">Select up to 4 models</p>
     </div>
   );
 }

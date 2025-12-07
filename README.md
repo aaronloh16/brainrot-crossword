@@ -16,7 +16,7 @@ Which AI has the most rizz? A real-time model evaluation game where GPT-4o, Clau
 **RizzWord** is a Model Eval Game that tests how well different AI models understand Gen Z internet slang and memes. 
 
 - Select 2-4 AI models to compete
-- Watch them race to solve a crossword filled with terms like "SKIBIDI", "RIZZ", "GYATT", and "SIGMA"
+- Watch them race to solve a crossword filled with terms like "SKIBIDI", "RIZZ", "SALTY", and "SIGMA"
 - Models use intersecting letters as hints (just like a real crossword!)
 - See which AI truly has the rizz when it comes to internet culture
 
@@ -158,7 +158,7 @@ rizzword/
 ## 📝 The Crossword
 
 13 brainrot terms including:
-- SIGMA, SKIBIDI, RIZZ, GYATT
+- SIGMA, SKIBIDI, RIZZ, SALTY
 - BUSSIN, GRIDDY, AURA, RATIO
 - SUS, OHIO, BLUD, CAP, COOK
 

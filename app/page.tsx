@@ -69,7 +69,7 @@ export default function Home() {
                 Powered by AI Gateway
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/aaronloh16/rizzword-model-eval"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-zinc-500 hover:text-white transition-colors"
@@ -91,7 +91,7 @@ export default function Home() {
                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                   Vercel AI Gateway Hackathon
                 </div>
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+                <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6">
                   Which AI has the
                   <br />
                   <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
@@ -99,20 +99,21 @@ export default function Home() {
                   </span>
                 </h1>
                 <p className="text-lg text-zinc-400 max-w-lg mx-auto mb-10">
-                  Race GPT-4o, Claude, Gemini, and Grok to solve a Gen Z slang crossword. 
+                  Race GPT-5 Pro, Claude 4.5, Gemini 3 Pro, and Grok 4 to solve a Gen Z slang crossword.
                   See which AI truly understands internet culture.
                 </p>
 
                 {selectedModels.length >= 2 && (
                   <button
                     onClick={handleStartGame}
-                    className="group inline-flex items-center gap-2 bg-white text-black font-medium px-6 py-3 rounded-full hover:bg-zinc-200 transition-all"
+                    className="group relative inline-flex items-center gap-2 bg-white text-black font-semibold px-8 py-4 rounded-full hover:bg-zinc-200 transition-all shadow-lg hover:shadow-xl hover:scale-105"
                   >
-                    Start Race
-                    <svg 
-                      className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" 
-                      fill="none" 
-                      stroke="currentColor" 
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 blur-xl group-hover:blur-2xl transition-all" />
+                    <span className="relative">Start Race</span>
+                    <svg
+                      className="relative w-5 h-5 group-hover:translate-x-1 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -124,7 +125,7 @@ export default function Home() {
               {/* Main content grid */}
               <div className="grid lg:grid-cols-3 gap-6 pb-20">
                 {/* Model selector */}
-                <div className="lg:col-span-2 bg-zinc-950 rounded-2xl border border-zinc-900 p-6">
+                <div className="lg:col-span-2 bg-zinc-950 rounded-2xl border border-zinc-900 p-4 sm:p-6">
                   <ModelSelector
                     selectedModels={selectedModels}
                     onModelToggle={handleModelToggle}
@@ -183,7 +184,7 @@ export default function Home() {
                   Featuring terms like
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
-                  {["SKIBIDI", "RIZZ", "GYATT", "SIGMA", "BUSSIN", "OHIO", "AURA", "SUS"].map((term) => (
+                  {["SKIBIDI", "RIZZ", "SALTY", "SIGMA", "BUSSIN", "OHIO", "AURA", "SUS"].map((term) => (
                     <span
                       key={term}
                       className="px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-full text-sm font-mono text-zinc-400"

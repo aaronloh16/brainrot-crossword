@@ -284,11 +284,13 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
   const startRace = useCallback(async () => {
     // Dramatic countdown: 3... 2... 1... GO!
     setCountdown(3);
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 800));
     setCountdown(2);
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 800));
     setCountdown(1);
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 800));
+    setCountdown(0);  // Show "GO!" instead of null
+    await new Promise((r) => setTimeout(r, 500));
     setCountdown(null);
 
     // Reset all model states for fresh start
@@ -377,9 +379,18 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
     <div className="relative">
       {/* Countdown overlay */}
       {countdown !== null && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
-          <div className="text-[150px] font-bold text-white animate-pulse">
-            {countdown}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm px-4">
+          <div className="relative">
+            {/* Glow effect */}
+            <div className="absolute inset-0 blur-3xl opacity-50">
+              <div className={`font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent ${countdown === 0 ? 'text-[80px] sm:text-[120px]' : 'text-[100px] sm:text-[150px]'}`}>
+                {countdown === 0 ? 'GO!' : countdown}
+              </div>
+            </div>
+            {/* Main countdown */}
+            <div className={`relative font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent ${countdown === 0 ? 'text-[80px] sm:text-[120px] animate-bounce' : 'text-[100px] sm:text-[150px] animate-pulse'}`}>
+              {countdown === 0 ? 'GO!' : countdown}
+            </div>
           </div>
         </div>
       )}
@@ -389,18 +400,19 @@ export function RaceArena({ selectedModels, onRaceComplete }: RaceArenaProps) {
         <div className="text-center mb-8">
           <button
             onClick={startRace}
-            className="inline-flex items-center gap-2 bg-white text-black font-medium px-8 py-3 rounded-full hover:bg-zinc-200 transition-all"
+            className="group relative inline-flex items-center gap-2 bg-white text-black font-semibold px-10 py-4 rounded-full hover:bg-zinc-200 transition-all shadow-lg hover:shadow-xl hover:scale-105"
           >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 blur-xl group-hover:blur-2xl transition-all" />
+            <svg className="relative w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
             </svg>
-            Start Race
+            <span className="relative">Start Race</span>
           </button>
         </div>
       )}
 
       {/* Racing grid - 2x2 layout for up to 4 models */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {[0, 1, 2, 3].map((index) => {
           const model = selectedModels[index];
           

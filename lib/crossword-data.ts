@@ -42,7 +42,7 @@ export interface CrosswordData {
  *    5  D # Y # # # N # # #     
  *    6  I # # R I Z Z # # #     RIZZ across
  *    7  # # # A # # # # # #     
- *    8  G Y A T T # C A P #     GYATT across, CAP across
+ *    8  S A L T Y # C A P #     SALTY across, CAP across
  *    9  # # # I # # O # # #     RATIO down, COOK down
  *   10  # # # O H I O # # #     OHIO across
  *   11  # # # # # # K # # #     
@@ -54,7 +54,7 @@ export interface CrosswordData {
  * - BLUD & BUSSIN share 'B' at (0,6)
  * - SUS & AURA share 'U' at (1,4)
  * - RIZZ & RATIO share 'R' at (6,3)
- * - GYATT & RATIO share 'T' at (8,3)
+ * - SALTY & RATIO share 'T' at (8,3)
  * - CAP & COOK share 'C' at (8,6)
  * - OHIO & RATIO share 'O' at (10,3)
  * - OHIO & COOK share 'O' at (10,6)
@@ -63,43 +63,43 @@ export interface CrosswordData {
 export const crosswordData: CrosswordData = {
   across: {
     "1": {
-      clue: "Lone wolf grindset archetype, male in his prime",
+      clue: "lone wolf grindset archetype, peak masculinity",
       answer: "SIGMA",
       row: 0,
       col: 0,
     },
     "2": {
-      clue: "British term for 'bro' or 'mate'",
+      clue: "british term for 'bro' or 'mate'",
       answer: "BLUD",
       row: 0,
       col: 6,
     },
     "3": {
-      clue: "When the imposter is acting kinda...",
+      clue: "when the imposter is acting kinda...",
       answer: "SUS",
       row: 1,
       col: 3,
     },
     "7": {
-      clue: "Charisma stat that gets you the number fr fr",
+      clue: "charisma stat that gets you the number fr fr",
       answer: "RIZZ",
       row: 6,
       col: 3,
     },
     "8": {
-      clue: "What you exclaim when you see something... substantial",
-      answer: "GYATT",
+      clue: "being bitter about taking an L",
+      answer: "SALTY",
       row: 8,
       col: 0,
     },
     "9": {
-      clue: "No ___ = I'm being completely serious rn",
+      clue: "no ___ = i'm being completely serious rn",
       answer: "CAP",
       row: 8,
       col: 6,
     },
     "12": {
-      clue: "State where literally anything weird can happen",
+      clue: "state where literally anything weird can happen",
       answer: "OHIO",
       row: 10,
       col: 3,
@@ -107,37 +107,37 @@ export const crosswordData: CrosswordData = {
   },
   down: {
     "1": {
-      clue: "Toilet-dwelling menace with an absolute banger of a theme song",
+      clue: "toilet-dwelling menace with an absolute banger theme song",
       answer: "SKIBIDI",
       row: 0,
       col: 0,
     },
     "4": {
-      clue: "Post-touchdown dance that went absolutely viral",
+      clue: "post-touchdown dance that went viral",
       answer: "GRIDDY",
       row: 0,
       col: 2,
     },
     "5": {
-      clue: "Invisible points you gain (+100) or lose (-1000)",
+      clue: "invisible points you gain (+100) or lose (-1000)",
       answer: "AURA",
       row: 0,
       col: 4,
     },
     "6": {
-      clue: "When food is so good it's absolutely ___",
+      clue: "when food is so good it's absolutely ___",
       answer: "BUSSIN",
       row: 0,
       col: 6,
     },
     "10": {
-      clue: "Getting L + ___ in the comments",
+      clue: "getting L + ___ in the comments",
       answer: "RATIO",
       row: 6,
       col: 3,
     },
     "11": {
-      clue: "'Let him ___' - he's about to do something crazy",
+      clue: "'let him ___' - he's about to do something crazy",
       answer: "COOK",
       row: 8,
       col: 6,

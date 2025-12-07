@@ -27,7 +27,7 @@ export function ModelSelector({
         </span>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {availableModels.map((model) => {
           const selected = isSelected(model);
           const disabled = !selected && !canAddMore;
@@ -37,9 +37,12 @@ export function ModelSelector({
               key={model.id}
               onClick={() => !disabled && onModelToggle(model)}
               disabled={disabled}
-              className={`relative p-4 rounded-xl border text-left transition-all ${
+              style={{
+                borderColor: selected ? `${model.color}40` : undefined,
+              }}
+              className={`relative p-5 rounded-xl border text-left transition-all ${
                 selected
-                  ? "border-white/20 bg-white/5"
+                  ? "bg-white/5 shadow-lg"
                   : disabled
                   ? "border-zinc-900 bg-zinc-950/50 opacity-40 cursor-not-allowed"
                   : "border-zinc-800 bg-zinc-950 hover:border-zinc-700 hover:bg-zinc-900/50"
@@ -64,13 +67,25 @@ export function ModelSelector({
                 </div>
               )}
 
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{model.avatar}</span>
-                <div>
-                  <span className="text-sm font-medium text-white block">
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 flex-shrink-0 relative">
+                  <img
+                    src={model.icon}
+                    alt={model.name}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-base font-medium text-white block">
                     {model.name}
                   </span>
-                  <span className="text-xs text-zinc-500">
+                  <span
+                    className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded inline-block mt-0.5"
+                    style={{
+                      color: model.color,
+                      backgroundColor: `${model.color}15`,
+                    }}
+                  >
                     {model.gatewayId.split('/')[0]}
                   </span>
                 </div>
